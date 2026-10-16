@@ -123,7 +123,12 @@ def measure_rows(rows,kind):
 
 
 def determine_measure(q):
-    if re.search(r'\b(?:average|mean|avg)\s+(?:(?:paid|successful|completed)\s+)?(?:order|transaction|sale|purchase)\s+(?:value|amount|revenue)\b|\baov\b',q): return 'aov'
+    # Recognize both 'average paid order value' and phrasing such as
+    # 'On average, how many US dollars is a paid South order worth?'
+    if re.search(r'\baov\b', q): return 'aov'
+    if re.search(r'\b(?:average|mean|avg)\b|\bon average\b', q):
+        if re.search(r'\b(?:order|orders|transaction|transactions|purchase|purchases|sale|sales)\b', q) and re.search(r'\b(?:value|worth|amount|revenue|usd|dollars|money|spend|spent)\b', q):
+            return 'aov'
     if re.search(r'\b(?:units|items|quantity|quantities|pieces)\b',q): return 'quantity'
     if re.search(r'\b(?:customers|buyers|clients)\b',q) and re.search(r'\b(?:how many|count|number|unique|distinct|most|top|highest|fewest|least)\b',q): return 'customers'
     if re.search(r'\b(?:revenue|sales|amount|value|usd|dollars|money|earnings|gmv|total refunded|refund value|refund amount)\b',q): return 'revenue'
