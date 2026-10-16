@@ -177,6 +177,14 @@ def solve(question):
         if re.search(r'\b(?:which|what|top|best|highest|most|lowest|least|fewest|smallest|worst|leading|largest|rank|bottom)\b',q):
             n=re.search(r'\b(?:top|bottom|first)\s+(\d+)\b',q)
             take=int(n.group(1)) if n else 1
+            # Identification questions expect the entity name, not a label/value pair.
+            # Provide the numeric metric only when explicitly requested as well.
+            wants_value = bool(re.search(
+                r'\b(?:how much|what (?:was|is) (?:the )?(?:revenue|amount|value|total)|'
+                r'and (?:its|their|the) (?:revenue|amount|value|sales)|with (?:its|the) (?:revenue|amount))\b', q
+            ))
+            if not wants_value:
+                return ', '.join(k for k, _ in ranked[:take])
             return ', '.join(f'{k}: {money(v) if measure in ("revenue","aov") else v}' for k,v in ranked[:take])
         return ', '.join(f'{k}: {money(v) if measure in ("revenue","aov") else v}' for k,v in sorted(vals.items()))
     value=measure_rows(rows,measure)
