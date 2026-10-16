@@ -123,7 +123,7 @@ def measure_rows(rows,kind):
 
 
 def determine_measure(q):
-    if re.search(r'\b(?:average order value|aov|average transaction|average (?:order|sale) amount)\b',q): return 'aov'
+    if re.search(r'\b(?:average|mean|avg)\s+(?:(?:paid|successful|completed)\s+)?(?:order|transaction|sale|purchase)\s+(?:value|amount|revenue)\b|\baov\b',q): return 'aov'
     if re.search(r'\b(?:units|items|quantity|quantities|pieces)\b',q): return 'quantity'
     if re.search(r'\b(?:customers|buyers|clients)\b',q) and re.search(r'\b(?:how many|count|number|unique|distinct|most|top|highest|fewest|least)\b',q): return 'customers'
     if re.search(r'\b(?:revenue|sales|amount|value|usd|dollars|money|earnings|gmv|total refunded|refund value|refund amount)\b',q): return 'revenue'
